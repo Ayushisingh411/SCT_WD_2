@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark" data-accent="purple">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A futuristic, premium stopwatch and productivity session tracker with high-precision measurements, visual analytics, keyboard shortcuts, and ambient micro-interactions.">
+  <title>Chronos // Premium Stopwatch & Session Analytics</title>
+
+  <!-- Google Fonts: Space Grotesk & Orbitron (for digital fonts if desired) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Premium Preloader -->
+  <div id="preloader" class="preloader-overlay" aria-hidden="true">
+    <div class="loader-content">
+      <div class="spinner-ring"></div>
+      <div class="loader-logo">CHRONOS</div>
+      <span class="loader-sub">Calibrating precision engine...</span>
+    </div>
+  </div>
+
+  <!-- Background Elements -->
+  <div class="bg-mesh" aria-hidden="true">
+    <div class="glowing-blob blob-1"></div>
+    <div class="glowing-blob blob-2"></div>
+    <div class="glowing-blob blob-3"></div>
+  </div>
+  <canvas id="particle-canvas" class="particle-overlay" aria-hidden="true"></canvas>
+
+  <!-- Main Container -->
+  <div class="app-container">
+    
+    <!-- Top Navigation -->
+    <header class="app-header">
+      <div class="header-left">
+        <div class="app-logo">
+          <i class="fa-solid fa-stopwatch logo-icon"></i>
+          <span class="logo-text">CHRONOS<span class="version-badge">v1.2</span></span>
+        </div>
+      </div>
+      
+      <!-- Live Clock -->
+      <div class="header-center">
+        <div class="live-clock-card" aria-label="Current system date and time">
+          <i class="fa-regular fa-calendar-days clock-card-icon"></i>
+          <span id="live-date">July 8, 2026</span>
+          <span class="clock-separator">•</span>
+          <i class="fa-regular fa-clock clock-card-icon"></i>
+          <span id="live-time">01:45:00 AM</span>
+        </div>
+      </div>
+
+      <nav class="header-right" aria-label="Application controls">
+        <!-- Accent Selector Quick Access -->
+        <div class="accent-pill-selector" aria-label="Custom accent color switcher">
+          <button class="accent-btn accent-purple active" data-color="purple" title="Purple Theme" aria-label="Switch accent color to purple"></button>
+          <button class="accent-btn accent-blue" data-color="blue" title="Blue Theme" aria-label="Switch accent color to blue"></button>
+          <button class="accent-btn accent-green" data-color="green" title="Green Theme" aria-label="Switch accent color to green"></button>
+          <button class="accent-btn accent-orange" data-color="orange" title="Orange Theme" aria-label="Switch accent color to orange"></button>
+          <button class="accent-btn accent-pink" data-color="pink" title="Pink Theme" aria-label="Switch accent color to pink"></button>
+        </div>
+
+        <div class="control-actions">
+          <button id="focus-btn" class="nav-icon-btn" title="Toggle Focus Mode (Press Esc to exit)" aria-label="Toggle Focus Mode">
+            <i class="fa-solid fa-expand-alt"></i>
+          </button>
+          <button id="fullscreen-btn" class="nav-icon-btn" title="Toggle Fullscreen (F)" aria-label="Toggle Fullscreen">
+            <i class="fa-solid fa-maximize"></i>
+          </button>
+          <button id="sound-btn" class="nav-icon-btn" title="Toggle Sound Effects" aria-label="Toggle Sound Effects">
+            <i class="fa-solid fa-volume-high"></i>
+          </button>
+          <button id="theme-btn" class="nav-icon-btn" title="Toggle Theme (T)" aria-label="Toggle Light/Dark Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <button id="shortcuts-btn" class="nav-icon-btn" title="Keyboard Shortcuts" aria-label="View Keyboard Shortcuts">
+            <i class="fa-solid fa-keyboard"></i>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- App Body Grid -->
+    <main class="app-main-grid">
+      
+      <!-- LEFT COLUMN: Stopwatch and Controls -->
+      <section class="grid-col-left" aria-label="Stopwatch Core Section">
+        <div class="glass-card hero-timer-card">
+          
+          <!-- circular timer container -->
+          <div class="timer-circle-container">
+            <!-- Pulsing outer shadows / glows -->
+            <div class="timer-outer-glow"></div>
+            
+            <!-- SVG Progress Ring -->
+            <svg class="progress-ring-svg" width="360" height="360" viewBox="0 0 360 360">
+              <circle class="progress-ring-bg" cx="180" cy="180" r="160" stroke-width="6" fill="transparent"/>
+              <circle class="progress-ring-indicator" cx="180" cy="180" r="160" stroke-width="8" fill="transparent"
+                      stroke-dasharray="1005.3" stroke-dashoffset="1005.3"/>
+            </svg>
+            
+            <!-- Digital Readout Center -->
+            <div class="timer-display-wrapper">
+              <div class="session-badge" id="timer-status">IDLE</div>
+              <div class="digital-timer" id="digital-display" aria-live="polite">
+                <span class="timer-unit" id="display-hours">00</span><span class="timer-colon">:</span><span class="timer-unit" id="display-minutes">00</span><span class="timer-colon">:</span><span class="timer-unit" id="display-seconds">00</span><span class="timer-dot">.</span><span class="timer-ms" id="display-ms">000</span>
+              </div>
+              <div class="timer-lap-summary" id="current-lap-preview">LAP 1 — 00:00:00.000</div>
+            </div>
+          </div>
+
+          <!-- Controls Section -->
+          <div class="controls-panel">
+            <div class="controls-row-primary">
+              <button id="start-pause-btn" class="btn btn-primary" aria-label="Start stopwatch">
+                <i class="fa-solid fa-play btn-icon"></i>
+                <span class="btn-text">Start</span>
+              </button>
+              <button id="lap-btn" class="btn btn-secondary" aria-label="Record lap time" disabled>
+                <i class="fa-solid fa-flag btn-icon"></i>
+                <span class="btn-text">Lap</span>
+              </button>
+            </div>
+            
+            <div class="controls-row-secondary">
+              <button id="reset-btn" class="btn btn-danger-outline" aria-label="Reset stopwatch" disabled>
+                <i class="fa-solid fa-arrow-rotate-left btn-icon"></i>
+                <span class="btn-text">Reset</span>
+              </button>
+              
+              <!-- Export Dropdown -->
+              <div class="export-dropdown-wrapper">
+                <button id="export-btn" class="btn btn-glass" aria-label="Export recorded laps" aria-haspopup="true" aria-expanded="false" disabled>
+                  <i class="fa-solid fa-download btn-icon"></i>
+                  <span class="btn-text">Export</span>
+                  <i class="fa-solid fa-chevron-down arrow-icon"></i>
+                </button>
+                <div class="export-dropdown-menu" role="menu">
+                  <button class="export-option-btn" data-format="csv" role="menuitem"><i class="fa-solid fa-file-csv"></i> CSV Dataset</button>
+                  <button class="export-option-btn" data-format="txt" role="menuitem"><i class="fa-solid fa-file-lines"></i> Plain Text</button>
+                  <button class="export-option-btn" data-format="json" role="menuitem"><i class="fa-solid fa-code"></i> JSON Format</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quote Widget -->
+          <div class="quote-container" aria-live="polite">
+            <i class="fa-solid fa-quote-left quote-mark"></i>
+            <p class="quote-text" id="quote-display">Time is what we want most, but what we use worst.</p>
+            <p class="quote-author" id="quote-author">— William Penn</p>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- RIGHT COLUMN: Analytics, Achievements, Lap List -->
+      <section class="grid-col-right" aria-label="Stopwatch Dashboard and Laps">
+        
+        <!-- Live Statistics Cards -->
+        <div class="stats-grid">
+          <div class="glass-card stat-card" id="stat-total-time-card">
+            <div class="stat-header">
+              <span class="stat-label">Total Time</span>
+              <i class="fa-solid fa-clock-rotate-left stat-icon color-primary"></i>
+            </div>
+            <div class="stat-value" id="stat-total-time">00:00:00</div>
+            <div class="stat-desc">Cumulative logged timing</div>
+          </div>
+          
+          <div class="glass-card stat-card" id="stat-laps-card">
+            <div class="stat-header">
+              <span class="stat-label">Laps Recorded</span>
+              <i class="fa-solid fa-stopwatch-20 stat-icon color-accent"></i>
+            </div>
+            <div class="stat-value" id="stat-laps-count">0</div>
+            <div class="stat-desc">Total laps in current session</div>
+          </div>
+
+          <div class="glass-card stat-card" id="stat-fastest-card">
+            <div class="stat-header">
+              <span class="stat-label">Fastest Lap</span>
+              <i class="fa-solid fa-bolt stat-icon color-success"></i>
+            </div>
+            <div class="stat-value text-success" id="stat-fastest-lap">—</div>
+            <div class="stat-desc" id="stat-fastest-lap-num">No laps logged yet</div>
+          </div>
+
+          <div class="glass-card stat-card" id="stat-slowest-card">
+            <div class="stat-header">
+              <span class="stat-label">Slowest Lap</span>
+              <i class="fa-solid fa-turtle stat-icon color-danger"></i>
+            </div>
+            <div class="stat-value text-danger" id="stat-slowest-lap">—</div>
+            <div class="stat-desc" id="stat-slowest-lap-num">No laps logged yet</div>
+          </div>
+        </div>
+
+        <!-- Laps List Timeline Container -->
+        <div class="glass-card timeline-card">
+          <div class="timeline-header">
+            <h2 class="section-title"><i class="fa-solid fa-list-ol"></i> Lap History</h2>
+            <div class="timeline-actions">
+              <span class="lap-count-pill" id="timeline-lap-counter">0 Laps</span>
+              <button id="clear-laps-btn" class="clear-btn" title="Clear History" aria-label="Clear lap history" disabled>
+                <i class="fa-solid fa-trash-can"></i>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Timeline View -->
+          <div class="timeline-viewport" id="timeline-scroll-container">
+            <div class="timeline-empty-state" id="timeline-empty-message">
+              <div class="empty-icon-wrapper">
+                <i class="fa-solid fa-route"></i>
+              </div>
+              <h3>No Lap Data Available</h3>
+              <p>Start the timer and record laps to visualize your split intervals and performance timelines here.</p>
+            </div>
+            
+            <div class="timeline-list" id="lap-timeline-list">
+              <!-- Lap cards dynamically added here -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Productivity Dashboard (Below Stopwatch) -->
+    <section class="productivity-section" aria-label="Productivity Dashboard">
+      <div class="glass-card dashboard-card">
+        <div class="dashboard-header">
+          <h2 class="dashboard-title"><i class="fa-solid fa-chart-line"></i> Productivity Dashboard</h2>
+          <span class="streak-badge"><i class="fa-solid fa-fire animate-pulse-streak"></i> Streak: <span id="streak-count">1</span> Day(s)</span>
+        </div>
+        
+        <div class="dashboard-grid">
+          <!-- Session Metrics Column -->
+          <div class="dashboard-metrics-col">
+            <h3 class="dash-subtitle">Session Metrics</h3>
+            <div class="metrics-row">
+              <div class="metric-box">
+                <span class="metric-label">Daily Focus Time</span>
+                <div class="metric-val" id="metric-daily-focus">0m</div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" id="daily-progress-bar" style="width: 0%;"></div>
+                </div>
+                <span class="metric-sub" id="daily-progress-desc">0% of 60m goal</span>
+              </div>
+              <div class="metric-box">
+                <span class="metric-label">Weekly Focus Time</span>
+                <div class="metric-val" id="metric-weekly-focus">0m</div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" id="weekly-progress-bar" style="width: 0%;"></div>
+                </div>
+                <span class="metric-sub" id="weekly-progress-desc">0% of 300m goal</span>
+              </div>
+            </div>
+
+            <div class="metrics-stats-grid">
+              <div class="stat-pill">
+                <span class="pill-title">Avg Session</span>
+                <span class="pill-value" id="analytic-avg-session">0.0s</span>
+              </div>
+              <div class="stat-pill">
+                <span class="pill-title">Longest Session</span>
+                <span class="pill-value" id="analytic-longest-session">0.0s</span>
+              </div>
+              <div class="stat-pill">
+                <span class="pill-title">Today's Sessions</span>
+                <span class="pill-value" id="analytic-today-sessions">0</span>
+              </div>
+              <div class="stat-pill">
+                <span class="pill-title">Total Sessions</span>
+                <span class="pill-value" id="analytic-total-sessions">0</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Achievements Badges Column -->
+          <div class="dashboard-achievements-col">
+            <h3 class="dash-subtitle">Unlocked Achievements</h3>
+            <div class="badge-showcase">
+              
+              <!-- Badge 1 -->
+              <div class="achievement-badge locked" id="badge-first-lap" data-desc="Log your first lap in Chronos.">
+                <div class="badge-icon-wrapper">
+                  <i class="fa-solid fa-flag-checkered"></i>
+                </div>
+                <div class="badge-info">
+                  <span class="badge-name">First Lap</span>
+                  <span class="badge-status">Locked</span>
+                </div>
+              </div>
+
+              <!-- Badge 2 -->
+              <div class="achievement-badge locked" id="badge-focus-ten" data-desc="Complete a continuous focus session of 10 minutes.">
+                <div class="badge-icon-wrapper">
+                  <i class="fa-solid fa-fire-flame-curved"></i>
+                </div>
+                <div class="badge-info">
+                  <span class="badge-name">Focus Starter (10m)</span>
+                  <span class="badge-status">Locked</span>
+                </div>
+              </div>
+
+              <!-- Badge 3 -->
+              <div class="achievement-badge locked" id="badge-marathon" data-desc="Track a timer marathon session of 1 hour or more.">
+                <div class="badge-icon-wrapper">
+                  <i class="fa-solid fa-trophy"></i>
+                </div>
+                <div class="badge-info">
+                  <span class="badge-name">Marathon Tracker</span>
+                  <span class="badge-status">Locked</span>
+                </div>
+              </div>
+
+              <!-- Badge 4 -->
+              <div class="achievement-badge locked" id="badge-precision" data-desc="Log 10 laps in a single active session.">
+                <div class="badge-icon-wrapper">
+                  <i class="fa-solid fa-award"></i>
+                </div>
+                <div class="badge-info">
+                  <span class="badge-name">Precision Master</span>
+                  <span class="badge-status">Locked</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-left">
+        <span>© 2026 Chronos Inc. Built for Internship Excellence.</span>
+      </div>
+      <div class="footer-right">
+        <a href="https://github.com" target="_blank" class="footer-link" aria-label="GitHub Repository">
+          <i class="fa-brands fa-github"></i> GitHub Source
+        </a>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Keyboard Shortcuts Modal -->
+  <div id="shortcuts-modal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-container" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div class="modal-header">
+        <h3 id="modal-title"><i class="fa-solid fa-keyboard"></i> Keyboard Shortcuts</h3>
+        <button id="close-shortcuts-btn" class="close-modal-btn" aria-label="Close modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <ul class="shortcut-list">
+          <li>
+            <span class="shortcut-key">Space</span>
+            <span class="shortcut-desc">Start or Pause stopwatch</span>
+          </li>
+          <li>
+            <span class="shortcut-key">L</span>
+            <span class="shortcut-desc">Record current Lap time</span>
+          </li>
+          <li>
+            <span class="shortcut-key">R</span>
+            <span class="shortcut-desc">Reset timer (triggers quotes)</span>
+          </li>
+          <li>
+            <span class="shortcut-key">F</span>
+            <span class="shortcut-desc">Toggle Fullscreen mode</span>
+          </li>
+          <li>
+            <span class="shortcut-key">T</span>
+            <span class="shortcut-desc">Toggle Light / Dark mode</span>
+          </li>
+          <li>
+            <span class="shortcut-key">Esc</span>
+            <span class="shortcut-desc">Exit Focus Mode / Close modals</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <!-- Custom Scripts -->
+  <script src="script.js"></script>
+</body>
+</html>

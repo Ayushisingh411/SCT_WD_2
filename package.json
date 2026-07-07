@@ -1,0 +1,8 @@
+{
+  "name": "chronos-stopwatch",
+  "version": "1.0.0",
+  "description": "Chronos Premium Stopwatch Web App",
+  "scripts": {
+    "dev": "npx -y http-server -p 8080"
+  }
+}
