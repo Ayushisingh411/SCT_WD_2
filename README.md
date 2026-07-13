@@ -78,7 +78,7 @@ Premium-Stopwatch/
 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/SCT_WD_2.git
+git clone https://github.com/Ayushisingh411/SCT_WD_2.git
 ```
 
 2. Open the project folder.
