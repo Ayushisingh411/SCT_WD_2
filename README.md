@@ -109,17 +109,13 @@ This project demonstrates:
 
 ## 📸 Preview
 
-> Add screenshots of your application here after completing the project.
+<img width="1876" height="955" alt="Screenshot 2026-07-17 191041" src="https://github.com/user-attachments/assets/56a81087-9a74-48b4-9379-8a9913ab471c" />
+<img width="1842" height="516" alt="Screenshot 2026-07-17 191104" src="https://github.com/user-attachments/assets/77f3bad4-bb0c-46d1-b962-e2a06360a784" />
+<img width="837" height="956" alt="Screenshot 2026-07-17 191148" src="https://github.com/user-attachments/assets/f9d79902-7a69-443a-93e5-9d8ac0a72956" />
+<img width="985" height="475" alt="Screenshot 2026-07-17 191127" src="https://github.com/user-attachments/assets/70ad5f91-0fea-46d7-b50f-38c81081ba76" />
+<img width="547" height="95" alt="Screenshot 2026-07-17 191218" src="https://github.com/user-attachments/assets/8af63b87-0c25-4dcb-8b32-d00e82dfbfe7" />
 
-Example:
 
-```
-screenshots/home.png
-screenshots/dark-theme.png
-screenshots/lap-history.png
-```
-
----
 
 ## 🌟 Future Improvements
 
